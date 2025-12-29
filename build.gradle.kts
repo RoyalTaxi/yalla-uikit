@@ -1,3 +1,4 @@
+import org.gradle.api.publish.maven.MavenPublication
 import org.jetbrains.kotlin.gradle.dsl.JvmTarget
 
 plugins {
@@ -8,8 +9,8 @@ plugins {
     `maven-publish`
 }
 
-group = "com.github.RoyalTaxi"
-version = "main-SNAPSHOT"
+group = "uz.yalla"
+version = "1.0.0"
 
 kotlin {
     androidTarget {
@@ -66,3 +67,26 @@ compose.resources {
     generateResClass = always
 }
 
+publishing {
+    repositories {
+        maven {
+            name = "GitHubPackages"
+            url = uri("https://maven.pkg.github.com/RoyalTaxi/yalla-uikit")
+            credentials {
+                username = project.findProperty("gpr.user") as String? ?: System.getenv("GITHUB_ACTOR")
+                password = project.findProperty("gpr.key") as String? ?: System.getenv("GITHUB_TOKEN")
+            }
+        }
+    }
+}
+
+afterEvaluate {
+    publishing {
+        publications.withType<MavenPublication>().configureEach {
+            val baseName = rootProject.name
+            if (artifactId.startsWith(baseName)) {
+                artifactId = artifactId.replace(baseName, "uikit")
+            }
+        }
+    }
+}
