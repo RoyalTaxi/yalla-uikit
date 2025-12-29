@@ -66,12 +66,3 @@ compose.resources {
     generateResClass = always
 }
 
-afterEvaluate {
-    publishing {
-        publications.configureEach {
-            if (this is MavenPublication) {
-                artifactId = artifactId.replace("yalla-uikit", "uikit")
-            }
-        }
-    }
-}
